@@ -15,7 +15,7 @@ import numpy as np
 # Get current working directory for create_engine()
 cwd = os.getcwd()
 
-# Set seaborn style and context. I think darkgrid looks good for digital media
+# Set seaborn style and context
 
 sns.set_style("darkgrid")
 sns.set_context("paper")
@@ -44,16 +44,22 @@ scopus_top6 = scopus[scopus['Publisher'].isin(top_6_publishers)]
 
 # Cat plot using Publisher as columns to show box plots of #Documents published
 
-top_6_boxplot = sns.catplot(data = scopus_top6, y= 'Documents', kind = 'box', col = 'Publisher', col_wrap = 3)
+top_6_boxplot = sns.displot(scopus_top6, x= 'Documents', col = 'Publisher', col_wrap=3,col_order=['Taylor & Francis',
+                                                                                                  'Springer Nature',
+                                                                                                  'Elsevier',
+                                                                                                  'Wiley-Blackwell',
+                                                                                                  'Multidisciplinary Digital Publishing Institute (MDPI)',
+                                                                                                  'IEEE'])
 
-# Use a log scale to better visualise the distribution
+# Outliers skew the scale so the scale needs to be reset
 axes = top_6_boxplot.axes.flat
+
 for i in axes:
-        i.set_yscale('log')
+        i.set_xlim(0,3000)
         
-top_6_boxplot .set_ylabels('# Documents published (log)')
-top_6_boxplot.fig.suptitle("Box plot of No. Documents Published by each Journal Within the Top 5 Publishers", y = 1.05)
-top_6_boxplot.savefig('Top_5_boxplot.png', dpi = resol)
+top_6_boxplot .set_xlabels('# Documents published')
+top_6_boxplot.fig.suptitle("KDE plot of No. Documents Published by each Journal Within the Top 6 Publishers", y = 1.05)
+top_6_boxplot.savefig('Top_6_kdeplot.png', dpi = resol)
 plt.clf()
 
 # Load Journal Impact Factor data taking only the relevant columns from impactfactor.db    

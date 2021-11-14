@@ -15,7 +15,7 @@ import numpy as np
 # Get current working directory for create_engine()
 cwd = os.getcwd()
 
-# Set seaborn style and context. I think darkgrid looks good for digital media
+# Set seaborn style and context
 
 sns.set_style("darkgrid")
 sns.set_context("paper")
