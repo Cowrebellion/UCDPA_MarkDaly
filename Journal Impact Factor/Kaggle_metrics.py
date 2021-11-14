@@ -30,7 +30,8 @@ kaggle2017 = pd.read_sql_query('SELECT "Source title", Publisher, Citations, Doc
 kaggle2018 = pd.read_sql_query('SELECT "Source title", Publisher, Citations, Documents, CiteScore, SNIP, SJR FROM kaggledata2018', engine)
 kaggle2019 = pd.read_sql_query('SELECT "Source title", Publisher, Citations, Documents, CiteScore, SNIP, SJR FROM kaggledata2019', engine)
 
-# Remove outlier from each using the fuction CS_outlier
+# Remove outlier from each using the fuction CS_outlier. 
+# There is one journal that consistently pulls really far ahead of all other journals and it pulls out the scale too much on graphics.
 kaggle2015 = CS_Outlier(kaggle2015)
 kaggle2016 = CS_Outlier(kaggle2016)
 kaggle2017 = CS_Outlier(kaggle2017)
@@ -42,14 +43,18 @@ kaggle2019 = CS_Outlier(kaggle2019)
 sns.set_style("darkgrid")
 sns.set_context("paper")
 
-# # Create a pairplot of the 3 different journal-based metrics provided in the Kaggle data for 2019
-# kplot = sns.pairplot(kaggle2015[["CiteScore","SNIP","SJR"]], kind = "reg", diag_kind="kde",plot_kws={'line_kws':{'color':'red'}})
-# # Add a kdeplot to the lower plots to show the distribution of each journal based metric
-# kplot.map_lower(sns.kdeplot, levels=4, color=".2")
-# kplot.fig.suptitle("Pairplot of CiteScore, SNIP, and SJR for 2019", y = 1.05)
 
-# # Save the figure to .png for including in report
-# kplot.savefig('2019_metric_comparison.png')
+
+# Create a pairplot of the 3 different journal-based metrics provided in the Kaggle data for 2019
+kplot = sns.pairplot(kaggle2015[["CiteScore","SNIP","SJR"]], kind = "reg", plot_kws={'line_kws':{'color':'red'}})
+# Add a kdeplot to the lower plots to show the distribution of each journal based metric
+kplot.map_lower(sns.kdeplot, levels=4, color=".2")
+kplot.fig.suptitle("Pairplot of CiteScore, SNIP, and SJR for 2019", y = 1.05)
+
+# Save the figure to .png for including in report
+kplot.savefig('2019_metric_comparison.png',dpi = 1000)
+plt.clf()
+
 
 
 # Next I want to see some trends over the past 5 years for the top 10 journals in 2019 as determine by CiteScore
@@ -60,24 +65,71 @@ kaggle_merge = kaggle_merge.merge(kaggle2016[["Source title","CiteScore", "SNIP"
 kaggle_merge = kaggle_merge.merge(kaggle2015[["Source title","CiteScore", "SNIP", "SJR"]], on = 'Source title', suffixes = (None,"_2015"))
 
 # Sort by CiteScore and find the top 10 for 2019
-sort_2019 = kaggle2019.sort_values('CiteScore', ascending = False)
-Top_10 = sort_2019['Source title'][0:10]
+sort_2019_CS = kaggle2019.sort_values('CiteScore', ascending = False)
+Top_10_CS = sort_2019_CS['Source title'][0:10]
 
-# Find the entries for hte top 10 in 5 previous years. Not all entries may match 
+# Sort by SJR and find the top 10 for 2019
+sort_2019_SJR = kaggle2019.sort_values('SJR', ascending = False)
+Top_10_SJR = sort_2019_SJR['Source title'][0:10]
 
-Top_CS_merge = kaggle_merge[kaggle_merge['Source title'].isin(Top_10)]
+# Sort by SNIP and find the top 10 for 2019
+sort_2019_SNIP = kaggle2019.sort_values('SNIP', ascending = False)
+Top_10_SNIP = sort_2019_SNIP['Source title'][0:10]
+
+# Find the entries for the top 10 in 5 previous years. Not all entries may match 
+# Top 10 CiteScore in 2019
+Top_CS_merge = kaggle_merge[kaggle_merge['Source title'].isin(Top_10_CS)]
 Top_CS_merge=Top_CS_merge.rename(columns = {'CiteScore_2015':'2015','CiteScore_2016':'2016','CiteScore_2017':'2017','CiteScore_2018':'2018','CiteScore':'2019'})
-Top_CS_merge.loc[Top_CS_merge['Source title']=='MMWR. Surveillance summaries : Morbidity and mortality weekly report. Surveillance summaries / CDC','Source title']='MMWR. Surveillance summaries'
-  
+# Rename long journals to something easier to read
+Top_CS_merge['Source title'] = Top_CS_merge['Source title'].replace(['MMWR. Surveillance summaries : Morbidity and mortality weekly report. Surveillance summaries / CDC','Source title'],'MMWR. Surveillance summaries')
+# Use Pandas' DataFrame .melt method to restructure the data into long form for use with Seaborn
 Top_CS_merge_melt = pd.melt(Top_CS_merge, id_vars=('Source title'), value_vars=['2015','2016','2017','2018','2019'])
 
-Top_7_plot = sns.catplot(data = Top_CS_merge_melt, y= 'value', kind = 'strip', x = 'variable', hue = 'Source title', jitter = False)
 
-Top_7_plot.set_xticklabels(rotation = 45)
-Top_7_plot.set_ylabels('CiteScore')
-Top_7_plot.set_xlabels('Year')
-Top_7_plot.fig.suptitle("Strip Plot of CiteScore vs Year for the Top 7 journals from 2019", y = 1.05)
-Top_7_plot.savefig('Top_7_CiteScore_2015-2019.png')
+# Top 10 SJR in 2019
+Top_SJR_merge = kaggle_merge[kaggle_merge['Source title'].isin(Top_10_SJR)]
+Top_SJR_merge=Top_SJR_merge.rename(columns = {'SJR_2015':'2015','SJR_2016':'2016','SJR_2017':'2017','SJR_2018':'2018','SJR':'2019'})
+# Rename long journals to something easier to read
+Top_SJR_merge['Source title'] = Top_SJR_merge['Source title'].replace(['National vital statistics reports : from the Centers for Disease Control and Prevention, National Center for Health Statistics, National Vital Statistics System'],'National vital statistics reports')
+# Use Pandas' DataFrame .melt method to restructure the data into long form for use with Seaborn
+Top_SJR_merge_melt = pd.melt(Top_SJR_merge, id_vars=('Source title'), value_vars=['2015','2016','2017','2018','2019'])
 
+
+# Top 10 SNIP in 2019
+Top_SNIP_merge = kaggle_merge[kaggle_merge['Source title'].isin(Top_10_SNIP)]
+Top_SNIP_merge=Top_SNIP_merge.rename(columns = {'SNIP_2015':'2015','SNIP_2016':'2016','SNIP_2017':'2017','SNIP_2018':'2018','SNIP':'2019'})
+# Rename long journals to something easier to read
+Top_SNIP_merge['Source title'] = Top_SNIP_merge['Source title'].replace(['MMWR. Surveillance summaries : Morbidity and mortality weekly report. Surveillance summaries / CDC','Source title'],'MMWR. Surveillance summaries')
+Top_SNIP_merge['Source title'] = Top_SNIP_merge['Source title'].replace(['National vital statistics reports : from the Centers for Disease Control and Prevention, National Center for Health Statistics, National Vital Statistics System'],'National vital statistics reports')
+# Use Pandas' DataFrame .melt method to restructure the data into long form for use with Seaborn
+Top_SNIP_merge_melt = pd.melt(Top_SNIP_merge, id_vars=('Source title'), value_vars=['2015','2016','2017','2018','2019'])
+
+
+# Plots for Top journals in 2019 that have data for the previous 5 years
+plt.figure()
+
+Top_8_CS_plot = sns.catplot(data = Top_CS_merge_melt, x = 'variable', y= 'value', kind = 'point', hue = 'Source title')
+
+Top_8_CS_plot.set_xticklabels(rotation = 45)
+Top_8_CS_plot.set_ylabels('CiteScore')
+Top_8_CS_plot.set_xlabels('Year')
+Top_8_CS_plot.fig.suptitle("Strip Plot of CiteScore vs Year for the Top 7 Journals from 2019", y = 1.05)
+Top_8_CS_plot.savefig('Top_8_CiteScore_2015-2019.png',dpi = 300)
+
+Top_7_SNIP_plot = sns.catplot(data = Top_SNIP_merge_melt, x = 'variable', y= 'value', kind = 'point', hue = 'Source title')
+
+Top_7_SNIP_plot.set_xticklabels(rotation = 45)
+Top_7_SNIP_plot.set_ylabels('SNIP')
+Top_7_SNIP_plot.set_xlabels('Year')
+Top_7_SNIP_plot.fig.suptitle("Point Plot of SNIP vs Year for the Top 7 Journals from 2019", y = 1.05)
+Top_7_SNIP_plot.savefig('Top_7_SNIP_2015-2019.png',dpi = 300)
+
+Top_7_SJR_plot = sns.catplot(data = Top_SJR_merge_melt, x = 'variable', y= 'value', kind = 'point', hue = 'Source title')
+
+Top_7_SJR_plot.set_xticklabels(rotation = 45)
+Top_7_SJR_plot.set_ylabels('SJR')
+Top_7_SJR_plot.set_xlabels('Year')
+Top_7_SJR_plot.fig.suptitle("Point Plot of SJR vs Year for the Top 8 Journals from 2019", y = 1.05)
+Top_7_SJR_plot.savefig('Top_8_SJR_2015-2019.png',dpi = 300)
 
 

@@ -30,7 +30,7 @@ api.dataset_download_file('umairnasir14/impact-factor-of-top-1000-journals','Imp
 IFR_path= "Impact-Factor-Ratings.xlsx"
 # This loads in all sheets of 'Impact-Factor-Ratings.xlsx' as JIF
 IFR = pd.read_excel(IFR_path,index_col=None,sheet_name=None)
-# This loop renames the columns appropriately
+# This loop renames the columns appropriately. The name of each sheet is a year we construct a new string to use from i in the loop.
 for i in IFR:
     keyname = str(int(i)-3) + '-' + str(int(i)-2000)
     IFR[str(i)] = IFR[str(i)].rename(columns={keyname+' Citations':'Citations', keyname+' Documents':'Documents'})
@@ -45,14 +45,21 @@ for i in IFR:
 # This part of the loop saves each file to the database
     IFR[str(i)].to_sql('kaggledata'+str(i), engine)
  
+    
+ 
+    
+ 
 # The next addition to the database is a datafile from PubMed. The data from 
 # pubmed is in a .txt format which needed extensive reformatting so I wrote a 
-# function which I import to restructure the data. This was imported earlier from another file
+# function (PMed_to_DF.py) which I import to restructure the data. This was imported earlier from another file
 # The function can take an integer to determine how many entries to take, but if left blank it defaults to the max (34371)
 PMed = Create_ISSN()
 PMed.to_sql('PubMed', engine)
 
-#The last piece of data for the database is from InCite. This stores the actual journal impact factor data.
+
+
+
+#The next source of data for the database is from InCites. This stores the actual journal impact factor data.
 InCites_path="JCR2021.xlsx"
 #Data is imported from the Excel file and rows are renamed
 InCites = pd.read_excel(InCites_path,skiprows=2,index_col=None, names = (['Journal_Title', 'Total_Citations', 'JIF', 'ES']))
@@ -64,22 +71,28 @@ InCites = InCites[((InCites['JIF']!=0) & (InCites['JIF']!='Not Available'))]
 # Added to database
 InCites.to_sql('Incites', engine)
 
+
+
+
 #To supplement the Kaggle data, I downloaded the full 
 # Scopus database which goes past the first 1000 entries and also contains data for 2020. 
 # For the purpose of this project I only take the 2020 sheet. 
-# The Scopus data seems to be complete so no cleaning is needed.
+# The Scopus data seems to be complete so little cleaning is needed.
 
 # Note that this data has multiple duplicate columns since each Scopus Sub-Subject Area
 # is a separate entry for each journal.
-
-Scopus_path="Scopus.xlsb"
-Scopus = pd.read_excel(Scopus_path,sheet_name = 1,names=(['Scopus Source ID', 'Journal_Title', 'Citation Count', 'Documents',
+scopus_path="Scopus.xlsb"
+scopus = pd.read_excel(scopus_path,sheet_name = 1,names=(['Scopus Source ID', 'Journal_Title', 'Citation Count', 'Documents',
        'Percent Cited', 'CiteScore', 'SNIP', 'SJR',
        'Subjects', 'Scopus Sub-Subject Area',
        'Percentile', 'RANK', 'Rank Out Of', 'Publisher', 'Type', 'Open Access',
        'Quartile', 'Top 10% (CiteScore Percentile)', 'URL Scopus Source ID',
        'ISSN', 'eISSN']))
-Scopus.to_sql('Scopus', engine)
+
+# Add to database
+scopus.to_sql('Scopus', engine)
+
+
 
 #SCIE Journals
 SCIE_path = 'wos-core_SCIE 2021-October-21.csv'
