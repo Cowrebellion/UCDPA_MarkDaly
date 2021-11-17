@@ -66,7 +66,7 @@ kplot.fig.text(0.89,0.7,"R = %.3f"%r3,fontdict=dict(size=10))
 kplot.fig.text(0.29,0.085,"R = %.3f"%r3 ,fontdict=dict(size=10))
 
 # Save the figure to .png for including in report
-kplot.savefig('2019_metric_comparison.png',dpi = 1000)
+kplot.savefig('Images\\2019_metric_comparison.png',dpi = 1000)
 
 plt.clf()
 
@@ -133,7 +133,7 @@ Top_8_CS_plot.set_xticklabels(rotation = 45)
 Top_8_CS_plot.set_ylabels('CiteScore')
 Top_8_CS_plot.set_xlabels('Year')
 Top_8_CS_plot.fig.suptitle("Strip Plot of CiteScore vs Year for the Top 7 Journals from 2019", y = 1.05)
-Top_8_CS_plot.savefig('Top_8_CiteScore_2015-2019.png',dpi = 300)
+Top_8_CS_plot.savefig('Images\\Top_8_CiteScore_2015-2019.png',dpi = 300)
 
 Top_7_SNIP_plot = sns.catplot(data = Top_SNIP_merge_melt, x = 'Year', y= 'SNIP', kind = 'point', hue = 'Source title')
 
@@ -141,7 +141,7 @@ Top_7_SNIP_plot.set_xticklabels(rotation = 45)
 Top_7_SNIP_plot.set_ylabels('SNIP')
 Top_7_SNIP_plot.set_xlabels('Year')
 Top_7_SNIP_plot.fig.suptitle("Point Plot of SNIP vs Year for the Top 7 Journals from 2019", y = 1.05)
-Top_7_SNIP_plot.savefig('Top_7_SNIP_2015-2019.png',dpi = 300)
+Top_7_SNIP_plot.savefig('Images\\Top_7_SNIP_2015-2019.png',dpi = 300)
 
 Top_7_SJR_plot = sns.catplot(data = Top_SJR_merge_melt, x = 'Year', y= 'SJR', kind = 'point', hue = 'Source title')
 
@@ -149,5 +149,5 @@ Top_7_SJR_plot.set_xticklabels(rotation = 45)
 Top_7_SJR_plot.set_ylabels('SJR')
 Top_7_SJR_plot.set_xlabels('Year')
 Top_7_SJR_plot.fig.suptitle("Point Plot of SJR vs Year for the Top 8 Journals from 2019", y = 1.05)
-Top_7_SJR_plot.savefig('Top_8_SJR_2015-2019.png',dpi = 300)
+Top_7_SJR_plot.savefig('Images\\Top_8_SJR_2015-2019.png',dpi = 300)
 

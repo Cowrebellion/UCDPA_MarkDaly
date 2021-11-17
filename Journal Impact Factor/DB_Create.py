@@ -94,7 +94,7 @@ scopus.to_sql('Scopus', engine)
 
 
 
-#SCIE Journals
+#SCIE Journals (I didn't end up using this, but the data is still valuable so I'll keep it in the database in case I plan on using it later)
 SCIE_path = 'wos-core_SCIE 2021-October-21.csv'
 SCIE = pd.read_csv(SCIE_path,skiprows=1,names = ['Journal_Title', 'ISSN', 'eISSN', 'Publisher', 'Publisher Address', 'Languages', 'Scientific_Categories'])
 SCIE.to_sql('SCIE', engine)

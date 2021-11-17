@@ -59,7 +59,7 @@ for i in axes:
         
 top_6_boxplot .set_xlabels('# Documents published')
 top_6_boxplot.fig.suptitle("KDE plot of No. Documents Published by each Journal Within the Top 6 Publishers", y = 1.05)
-top_6_boxplot.savefig('Top_6_kdeplot.png', dpi = resol)
+top_6_boxplot.savefig('Images\\Top_6_kdeplot.png', dpi = resol)
 plt.clf()
 
 # Load Journal Impact Factor data taking only the relevant columns from impactfactor.db    
@@ -89,7 +89,7 @@ Doc_vs_JIF.fig.suptitle("Documents Published vs Impact Factor per Journal", y=1.
 Doc_vs_JIF.fig.text(0.6,0.18,"90th Percentile",fontdict=dict(size=10))
 Doc_vs_JIF.fig.text(0.15,0.55,"90th Percentile",fontdict=dict(size=10), rotation = -90)
 
-Doc_vs_JIF.savefig('Doc_vs_JIF.png', dpi = resol)
+Doc_vs_JIF.savefig('Images\\Doc_vs_JIF.png', dpi = resol)
 
 # Number of journals that publish more than the 90th percentile, but have JIF > than the 90th percentile
 print("The number of journals that publish more than the 90th percentile, \
