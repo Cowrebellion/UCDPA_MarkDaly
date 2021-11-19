@@ -132,7 +132,7 @@ Top_8_CS_plot = sns.catplot(data = Top_CS_merge_melt, x = 'Year', y= 'CiteScore'
 Top_8_CS_plot.set_xticklabels(rotation = 45)
 Top_8_CS_plot.set_ylabels('CiteScore')
 Top_8_CS_plot.set_xlabels('Year')
-Top_8_CS_plot.fig.suptitle("Point Plot of CiteScore vs Year for the Top 7 Journals from 2019", y = 1.05)
+Top_8_CS_plot.fig.suptitle("Point Plot of CiteScore vs Year for the Top 8 Journals from 2019", y = 1.05)
 Top_8_CS_plot.fig.text(0.05, 1.05,"(a)",fontdict=dict(size=16))
 Top_8_CS_plot.savefig('Images\\Top_8_CiteScore_2015-2019.png',dpi = 300)
 
