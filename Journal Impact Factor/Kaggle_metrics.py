@@ -116,7 +116,7 @@ Top_SJR_merge_melt = pd.melt(Top_SJR_merge, id_vars=('Source title'),
 Top_SNIP_merge = kaggle_merge[kaggle_merge['Source title'].isin(Top_10_SNIP)]
 Top_SNIP_merge=Top_SNIP_merge.rename(columns = {'SNIP_2015':'2015','SNIP_2016':'2016',
                                                 'SNIP_2017':'2017','SNIP_2018':'2018','SNIP':'2019'})
-# Rename long journals to something easier to read
+# Rename journals with long titles to something easier to read
 Top_SNIP_merge['Source title'] = Top_SNIP_merge['Source title'].replace(['MMWR. Surveillance summaries : Morbidity and mortality weekly report. Surveillance summaries / CDC','Source title'],'MMWR. Surveillance summaries')
 Top_SNIP_merge['Source title'] = Top_SNIP_merge['Source title'].replace(['National vital statistics reports : from the Centers for Disease Control and Prevention, National Center for Health Statistics, National Vital Statistics System'],'National vital statistics reports')
 # Use Pandas' DataFrame .melt method to restructure the data into long form for use with Seaborn
@@ -124,7 +124,7 @@ Top_SNIP_merge_melt = pd.melt(Top_SNIP_merge, id_vars=('Source title'),
                               value_vars=['2015','2016','2017','2018','2019'],var_name='Year', value_name='SNIP')
 
 
-# Plots for Top journals in 2019 that have data for the previous 5 years
+# Three plots for the Top journals in 2019 that have data for the previous 5 years
 plt.figure()
 
 Top_8_CS_plot = sns.catplot(data = Top_CS_merge_melt, x = 'Year', y= 'CiteScore', kind = 'point', hue = 'Source title')

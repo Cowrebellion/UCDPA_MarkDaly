@@ -19,7 +19,7 @@ cwd = os.getcwd()
 
 sns.set_style("darkgrid")
 sns.set_context("paper")
-# setting dpi resolution for later figure exports
+# Setting dpi resolution for later figure exports
 resol = 300
 
 def pcnt(df_col,pct):
@@ -42,7 +42,7 @@ scopus['Journal_Title']=scopus['Journal_Title'].str.lower()
 pubmed['Journal_Title']=pubmed['Journal_Title'].str.lower()
 
 
-# inner join on data to only keep matching pairs
+# Inner join on data to only keep matching pairs
 merged_data_pubtype = scopus.merge(pubmed, on = "Journal_Title" )
 # I want a new column that indicats if a journal publishes in print only, online only, or both
 
@@ -60,9 +60,7 @@ pub_type.savefig('Images\\2020 PubType',dpi = 300)
 plt.clf()
 plt.figure()
 
-# Load Scopus Data again, but with subject information
-
-
+# Load Scopus Data again, but this time include subject information
 scopus= pd.read_sql_query('SELECT "Journal_Title", Publisher, Documents, SNIP, "Scopus Sub-Subject Area" FROM Scopus', engine)
 
 # The Scopus data contains information about the subjects, but they are in strings. I need to change this to a list first

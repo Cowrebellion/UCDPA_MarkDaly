@@ -13,14 +13,14 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 from PMed_to_DF import Create_ISSN
 
 tic = time.perf_counter()
-#get current working directory and save as cwd
+# Get current working directory and save as cwd
 cwd = os.getcwd()
 
 # Create the sqlalchemy engine using create_engine() method
 engine = create_engine('sqlite:///' + cwd + '\\impactfactor.db')
 
 
-#The first addition to the database is from a Kaggle file. 
+# The first addition to the database is from a Kaggle file. 
 # I use an API to download the file then clean the data and add to the database
 # Initialise kaggle api and then download the file needed
 api = KaggleApi()
@@ -45,9 +45,6 @@ for i in IFR:
 # This part of the loop saves each file to the database
     IFR[str(i)].to_sql('kaggledata'+str(i), engine)
  
-    
- 
-    
  
 # The next addition to the database is a datafile from PubMed. The data from 
 # pubmed is in a .txt format which needed extensive reformatting so I wrote a 
@@ -55,8 +52,6 @@ for i in IFR:
 # The function can take an integer to determine how many entries to take, but if left blank it defaults to the max (34371)
 PMed = Create_ISSN()
 PMed.to_sql('PubMed', engine)
-
-
 
 
 #The next source of data for the database is from InCites. This stores the actual journal impact factor data.
@@ -72,10 +67,9 @@ InCites = InCites[((InCites['JIF']!=0) & (InCites['JIF']!='Not Available'))]
 InCites.to_sql('Incites', engine)
 
 
+# To supplement the Kaggle data, I downloaded the full Scopus database which 
+# goes past the first 1000 entries and also contains data for 2020. 
 
-
-#To supplement the Kaggle data, I downloaded the full 
-# Scopus database which goes past the first 1000 entries and also contains data for 2020. 
 # For the purpose of this project I only take the 2020 sheet. 
 # The Scopus data seems to be complete so little cleaning is needed.
 
@@ -91,7 +85,6 @@ scopus = pd.read_excel(scopus_path,sheet_name = 1,names=(['Scopus Source ID', 'J
 
 # Add to database
 scopus.to_sql('Scopus', engine)
-
 
 
 #SCIE Journals (I didn't end up using this, but the data is still valuable so I'll keep it in the database in case I plan on using it later)

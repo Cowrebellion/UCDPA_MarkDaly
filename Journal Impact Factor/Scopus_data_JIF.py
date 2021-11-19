@@ -42,7 +42,7 @@ top_6_publishers = scopus_grouped_publisher.reset_index()['Publisher'][0:6]
 # Select only those publishers from the full list
 scopus_top6 = scopus[scopus['Publisher'].isin(top_6_publishers)]
 
-# Cat plot using Publisher as columns to show box plots of #Documents published
+# Catplot using Publisher as columns to show box plots of #Documents published
 
 top_6_boxplot = sns.displot(scopus_top6, x= 'Documents', col = 'Publisher', col_wrap=3,col_order=['Taylor & Francis',
                                                                                                   'Springer Nature',
@@ -65,13 +65,13 @@ plt.clf()
 # Load Journal Impact Factor data taking only the relevant columns from impactfactor.db    
 incites= pd.read_sql_query('SELECT "Journal_Title", "Total_Citations", JIF, ES FROM Incites', engine)
 
-#set "Journal_Title" to lowercase to increase chance of merging on this index
+# Set "Journal_Title" to lowercase to increase chance of merging on this index
 scopus['Journal_Title']=scopus['Journal_Title'].str.lower()
 incites['Journal_Title']=incites['Journal_Title'].str.lower()
 
-# inner join on data to only keep matching pairs
+# Inner join on data to only keep matching pairs
 merged_data = scopus.merge(incites, on = "Journal_Title" )
-# remove outliner with JIF of >500
+# Remove outliner with JIF of >500 as it skews the plots and doesn't provide any insight
 merged_data = merged_data[merged_data['JIF']<500]
 
 Doc90pct = pcnt(merged_data['Documents'],90)
